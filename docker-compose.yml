@@ -1,0 +1,58 @@
+# ============================================================
+# Docker Compose 
+# Usage : make dev
+# ============================================================
+
+services:
+
+  db:
+    image: postgres:16-alpine
+    container_name: reactive_agent_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-agent_db}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-agent_db}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    networks:
+      - agent_net
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: dev
+    container_name: reactive_agent_backend
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-agent_db}
+    volumes:
+      - ./app:/app
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - agent_net
+
+volumes:
+  postgres_data:
+    name: reactive_agent_postgres_data
+
+networks:
+  agent_net:
+    name: reactive_agent_network
+    driver: bridge
