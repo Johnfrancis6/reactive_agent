@@ -50,7 +50,7 @@ make dev               # starts PostgreSQL + backend
 ```
 POST /agent/chat
      │
-     ├─► input_guard       → blocks injections, scores risk
+     ├─► input_validation      → blocks injections, scores risk
      ├─► planner           → JSON plan + tool selection
      ├─► agent_llm    ◄────────────────────────┐
      │       │                                  │
