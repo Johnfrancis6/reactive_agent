@@ -20,8 +20,8 @@ Production-ready AI agent with persistent memory, guardrails, and human-in-the-l
 ## Setup
 
 ```bash
-git clone https://github.com/franciskissou/langgraph-agent
-cd langgraph-agent
+git clone https://github.com/Johnfrancis6/reactive_agent.git
+cd reactive_agent
 
 uv venv && source .venv/bin/activate
 uv pip install -r requirements.txt
