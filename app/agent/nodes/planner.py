@@ -41,7 +41,7 @@ Rules:
 - Sending an email always requires human approval.
 - If the task is simple, do not over-plan.
 - Never invent tools that are not available.
-
+- For send_email tasks: set requires_human_approval to true. The agent must NOT ask the user to confirm verbally — the system UI handles approval.
 Respond ONLY with valid JSON (no markdown, no explanation):
 {{
   "plan": ["step 1", "step 2"],
@@ -116,6 +116,8 @@ async def planner_node(state: AgentState) -> dict:
     if invalid_tools:
         log.warning("planner_invalid_tools: %s", invalid_tools)
         required_tools = [t for t in required_tools if t in AVAILABLE_TOOLS]
+    if "send_email" in required_tools:
+        requires_human_approval = True
     if not required_tools:
         log.warning("planner_no_valid_tools: falling back to empty tool list")
 

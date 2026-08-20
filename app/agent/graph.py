@@ -108,14 +108,3 @@ def get_agent() -> CompiledStateGraph:
 
 
 
-# Here is the final graph : the user input must be validate first and then send to the llm for for the next step. from the llm others process including tools calling , human approvation , output validation  or planning  wait for the llm action
-
-
-
-#  --  optinal  --
-# from IPython.display  import  display  , Image
-# from langgraph.checkpoint.memory import  MemorySaver
-
-
-# GRAPH = build_agent_graph(MemorySaver())
-# display(Image(GRAPH.get_graph().draw_mermaid_png()))
